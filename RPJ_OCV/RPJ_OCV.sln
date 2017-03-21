@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpencvBuildTest", "OpencvBuildTest\OpencvBuildTest.vcxproj", "{C411DB01-22DB-4E4F-92EE-8702240B7773}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoadCaffeModule", "LoadCaffeModule\LoadCaffeModule.vcxproj", "{F4941D3C-638A-4C09-8FAB-40F33E5C9A56}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{C411DB01-22DB-4E4F-92EE-8702240B7773}.Release|x64.Build.0 = Release|x64
 		{C411DB01-22DB-4E4F-92EE-8702240B7773}.Release|x86.ActiveCfg = Release|Win32
 		{C411DB01-22DB-4E4F-92EE-8702240B7773}.Release|x86.Build.0 = Release|Win32
+		{F4941D3C-638A-4C09-8FAB-40F33E5C9A56}.Debug|x64.ActiveCfg = Debug|x64
+		{F4941D3C-638A-4C09-8FAB-40F33E5C9A56}.Debug|x64.Build.0 = Debug|x64
+		{F4941D3C-638A-4C09-8FAB-40F33E5C9A56}.Debug|x86.ActiveCfg = Debug|Win32
+		{F4941D3C-638A-4C09-8FAB-40F33E5C9A56}.Debug|x86.Build.0 = Debug|Win32
+		{F4941D3C-638A-4C09-8FAB-40F33E5C9A56}.Release|x64.ActiveCfg = Release|x64
+		{F4941D3C-638A-4C09-8FAB-40F33E5C9A56}.Release|x64.Build.0 = Release|x64
+		{F4941D3C-638A-4C09-8FAB-40F33E5C9A56}.Release|x86.ActiveCfg = Release|Win32
+		{F4941D3C-638A-4C09-8FAB-40F33E5C9A56}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
