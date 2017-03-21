@@ -21,3 +21,8 @@ private:
 	std::map<std::string, std::shared_ptr<std::set<line_no>>> wm;
 };
 
+class QueryResult
+{
+
+};
+
