@@ -21,9 +21,6 @@
     <ClCompile Include="TextQuery.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Foo.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TextQuery.h">

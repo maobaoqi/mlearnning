@@ -2,5 +2,5 @@
 class Foo
 {
 public:
-	Foo& operator=(const Foo&);
+	Foo& operator=(const Foo&) = default;
 };
