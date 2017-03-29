@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpencvBuildTest", "OpencvBu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoadCaffeModule", "LoadCaffeModule\LoadCaffeModule.vcxproj", "{F4941D3C-638A-4C09-8FAB-40F33E5C9A56}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasicLineTransform", "BasicLineTransform\BasicLineTransform.vcxproj", "{E6ED44A5-5286-45F6-AB4F-CA85795066E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{F4941D3C-638A-4C09-8FAB-40F33E5C9A56}.Release|x64.Build.0 = Release|x64
 		{F4941D3C-638A-4C09-8FAB-40F33E5C9A56}.Release|x86.ActiveCfg = Release|Win32
 		{F4941D3C-638A-4C09-8FAB-40F33E5C9A56}.Release|x86.Build.0 = Release|Win32
+		{E6ED44A5-5286-45F6-AB4F-CA85795066E2}.Debug|x64.ActiveCfg = Debug|x64
+		{E6ED44A5-5286-45F6-AB4F-CA85795066E2}.Debug|x64.Build.0 = Debug|x64
+		{E6ED44A5-5286-45F6-AB4F-CA85795066E2}.Debug|x86.ActiveCfg = Debug|Win32
+		{E6ED44A5-5286-45F6-AB4F-CA85795066E2}.Debug|x86.Build.0 = Debug|Win32
+		{E6ED44A5-5286-45F6-AB4F-CA85795066E2}.Release|x64.ActiveCfg = Release|x64
+		{E6ED44A5-5286-45F6-AB4F-CA85795066E2}.Release|x64.Build.0 = Release|x64
+		{E6ED44A5-5286-45F6-AB4F-CA85795066E2}.Release|x86.ActiveCfg = Release|Win32
+		{E6ED44A5-5286-45F6-AB4F-CA85795066E2}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
