@@ -2,10 +2,6 @@
 #include <opencv2\imgproc.hpp>
 
 
-HarrisDetector::HarrisDetector()
-{
-}
-
 
 HarrisDetector::~HarrisDetector()
 {

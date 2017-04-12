@@ -26,10 +26,15 @@ int main(int argc, char** argv)
 
 	cv::namedWindow("Harris Strength");
 	cv::imshow("Harris Strength", harrisCorners);
-	cv::waitKey(0);
 
 	std::vector<cv::KeyPoint> keypoints;
-	cv::Ptr<cv::FastFeatureDetector> fd1 = new cv::FastFeatureDetector();
+	cv::Ptr<cv::Feature2D> ptrBrisk = cv::ORB::create();
+	ptrBrisk->detect(image, keypoints);
 
+	cv::drawKeypoints(image, keypoints, image, cv::Scalar(0, 255, 0), cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+	cv::namedWindow("IMAGE");
+	cv::imshow("IMAGE", image);
+
+	cv::waitKey(0);
 	return 0;
 }
