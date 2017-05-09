@@ -21,5 +21,9 @@ int main(int argc, char** argv)
 	std::cout << val1 << std::endl;
 	std::cout << val2 << std::endl;
 
+	char ch;
+	ch = 'D';
+	std::cout << ch << std::endl;
+
 	return 0;
 }
