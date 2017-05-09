@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.vcxproj", "{A2A31FF3-3D94-496F-9981-389DF704D240}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AbstractClass", "AbstractClass\AbstractClass.vcxproj", "{14405B3A-CDC3-4D21-91AA-56008BB4C5FA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenMPTest", "OpenMPTest\OpenMPTest.vcxproj", "{BDF918BB-BBDC-476F-B409-980E3E6725BF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NumerateDateType", "NumerateDateType\NumerateDateType.vcxproj", "{C27810C0-3B29-4A5E-B174-1ECD15316293}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,14 @@ Global
 		{BDF918BB-BBDC-476F-B409-980E3E6725BF}.Release|x64.Build.0 = Release|x64
 		{BDF918BB-BBDC-476F-B409-980E3E6725BF}.Release|x86.ActiveCfg = Release|Win32
 		{BDF918BB-BBDC-476F-B409-980E3E6725BF}.Release|x86.Build.0 = Release|Win32
+		{C27810C0-3B29-4A5E-B174-1ECD15316293}.Debug|x64.ActiveCfg = Debug|x64
+		{C27810C0-3B29-4A5E-B174-1ECD15316293}.Debug|x64.Build.0 = Debug|x64
+		{C27810C0-3B29-4A5E-B174-1ECD15316293}.Debug|x86.ActiveCfg = Debug|Win32
+		{C27810C0-3B29-4A5E-B174-1ECD15316293}.Debug|x86.Build.0 = Debug|Win32
+		{C27810C0-3B29-4A5E-B174-1ECD15316293}.Release|x64.ActiveCfg = Release|x64
+		{C27810C0-3B29-4A5E-B174-1ECD15316293}.Release|x64.Build.0 = Release|x64
+		{C27810C0-3B29-4A5E-B174-1ECD15316293}.Release|x86.ActiveCfg = Release|Win32
+		{C27810C0-3B29-4A5E-B174-1ECD15316293}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
