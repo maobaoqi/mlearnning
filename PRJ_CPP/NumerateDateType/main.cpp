@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include "MyClass.h"
+
 enum Finger
 {
 	DMZ = 0,
@@ -20,6 +22,11 @@ int main(int argc, char** argv)
 
 	std::cout << val1 << std::endl;
 	std::cout << val2 << std::endl;
+
+	AddNum addOperator;
+	addOperator.num1 = 1.2;
+	addOperator.num2 = 1.7;
+	std::cout << addOperator.getResult() << std::endl;
 
 	return 0;
 }
