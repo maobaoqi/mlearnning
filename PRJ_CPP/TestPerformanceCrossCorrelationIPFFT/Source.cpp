@@ -8,23 +8,23 @@
 
 int main()
 {
-	int w = 16384;
-	int h = 16384;
+	int w = 4096;
+	int h = 4096;
 
 	IppiSize roi = { w, h };
 	int stepSize = w * sizeof(Ipp8u);
 
-	Ipp8u* refImg = ippiMalloc_8u_C1(w, h, &stepSize);
-	Ipp8u* srcImg = ippiMalloc_8u_C1(w, h, &stepSize);
+	//Ipp8u* refImg = ippiMalloc_8u_C1(w, h, &stepSize);
+	//Ipp8u* srcImg = ippiMalloc_8u_C1(w, h, &stepSize);
 
-	//Ipp8u* refImg = new Ipp8u[w * h];
-	//Ipp8u* srcImg = new Ipp8u[w*h];
+	Ipp8u* refImg = new Ipp8u[w * h];
+	Ipp8u* srcImg = new Ipp8u[w*h];
 
 	
 	ippiSet_8u_C1R(0, refImg, stepSize, roi);
-	refImg[1006 + 16384 * 105] = 30;
-	refImg[1007 + 16384 * 105] = 30;
-	refImg[1008 + 16384 * 105] = 30;
+	refImg[18 + 4096 * 105] = 30;
+	refImg[19 + 4096 * 105] = 30;
+	refImg[20 + 4096 * 105] = 30;
 	//refImg[1003 + 2048 * 105] = 10;
 	//refImg[1004 + 2048 * 105] = 10;
 	//refImg[1005 + 2048 * 105] = 10;
@@ -41,9 +41,9 @@ int main()
 
 	
 	ippiSet_8u_C1R(0, srcImg, stepSize, roi);
-	srcImg[1008 + 16384 * 500] = 30;
-	srcImg[1009 + 16384 * 500] = 30;
-	srcImg[1010 + 16384 * 500] = 30;
+	srcImg[15 + 4096 * 500] = 30;
+	srcImg[16 + 4096 * 500] = 30;
+	srcImg[17 + 4096 * 500] = 30;
 	
 	
 	int hshift = 0;
@@ -61,12 +61,14 @@ int main()
 
 	PhaseCorrelation(srcImg, refImg, roi, wshift, hshift);
 
-
-	//tEnd = clock();
+    //tEnd = clock();
 
 	//std::cout << double(tEnd - tStart) / CLOCKS_PER_SEC * 1000 << std::endl;
 	
-	ippiFree(refImg);
-	ippiFree(srcImg);
+	//ippiFree(refImg);
+	//ippiFree(srcImg);
+	delete[] refImg;
+	delete[] srcImg;
+
 	return 0;
 }

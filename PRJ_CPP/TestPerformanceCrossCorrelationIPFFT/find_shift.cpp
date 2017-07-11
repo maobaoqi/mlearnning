@@ -52,21 +52,21 @@ void FindShift(float* ccMap, LocationPair & shift, int width, int height, Locati
 		step, 
 		{ lenSubBox / 2, lenSubBox / 2 });
 
-	ippiCopy_32f_C1R(mapSubBox + mapSubBox_step / 2, 
+	ippiCopy_32f_C1R(mapSubBox + lenSubBox / 2, 
 		mapSubBox_step,
-		hFFTMapPadFB + (lenPad - lenSubBox / 2)*sizeof(Ipp32f), 
+		hFFTMapPadFB + (lenPad - lenSubBox / 2), 
 		step, 
 		{ lenSubBox / 2, lenSubBox / 2 });
 
-	ippiCopy_32f_C1R(mapSubBox + (lenSubBox / 2)*mapSubBox_step, 
+	ippiCopy_32f_C1R(mapSubBox + (lenSubBox / 2)*lenSubBox, 
 		mapSubBox_step,
-		hFFTMapPadFB + (lenPad - lenSubBox / 2)*step, 
+		hFFTMapPadFB + (lenPad - lenSubBox / 2)*lenPad, 
 		step, 
 		{ lenSubBox / 2, lenSubBox / 2 });
 
-	ippiCopy_32f_C1R(mapSubBox + (lenSubBox * (lenSubBox / 2) + (lenSubBox / 2))*sizeof(Ipp32f), 
+	ippiCopy_32f_C1R(mapSubBox + (lenSubBox * (lenSubBox / 2) + (lenSubBox / 2)), 
 		mapSubBox_step,
-		hFFTMapPadFB + ((lenPad - lenSubBox / 2)*lenPad + (lenPad - lenSubBox / 2))*sizeof(Ipp32f), 
+		hFFTMapPadFB + ((lenPad - lenSubBox / 2)*lenPad + (lenPad - lenSubBox / 2)), 
 		step, 
 		{ lenSubBox / 2, lenSubBox / 2 });
 
