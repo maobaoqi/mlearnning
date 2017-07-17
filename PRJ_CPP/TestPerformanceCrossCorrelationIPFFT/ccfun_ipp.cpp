@@ -9,69 +9,80 @@ void PhaseCorrelation(Ipp8u* ref, Ipp8u* src, IppiSize roi, int &wshift, int &hs
 
 	int sizeSpec, sizeInit, sizeBuf;
 	int orderX, orderY;
-	orderX = 12;
-	orderY = 12;
-	status = ippiFFTGetSize_R_32f(orderX, orderY, IPP_FFT_DIV_INV_BY_N, IppHintAlgorithm::ippAlgHintAccurate, &sizeSpec, &sizeInit, &sizeBuf);
+	orderX = 13;
+	orderY = 13;
+	status = ippiFFTGetSize_R_32f(orderX, orderY, IPP_FFT_DIV_FWD_BY_N, IppHintAlgorithm::ippAlgHintAccurate, &sizeSpec, &sizeInit, &sizeBuf);
 
 	IppiFFTSpec_R_32f* pFFTSpec = (IppiFFTSpec_R_32f*)ippMalloc(sizeSpec);
 	Ipp8u* pMemInit = (Ipp8u*)ippMalloc(sizeInit);
 	Ipp8u* ipp8uBuffer = (Ipp8u*)ippMalloc(sizeBuf);
 
-	status = ippiFFTInit_R_32f(orderX, orderY,IPP_FFT_DIV_INV_BY_N, IppHintAlgorithm::ippAlgHintAccurate, pFFTSpec, pMemInit);
+	status = ippiFFTInit_R_32f(orderX, orderY, IPP_FFT_DIV_FWD_BY_N, IppHintAlgorithm::ippAlgHintAccurate, pFFTSpec, pMemInit);
 
 	// FFT
-	int ipp32steps = roi.width * sizeof(Ipp32f);
-	//Ipp32f* ref_tmp = ippiMalloc_32f_C1(roi.width, roi.height, &ipp32steps);
-	//Ipp32f* src_tmp = ippiMalloc_32f_C1(roi.width, roi.height, &ipp32steps);
-	Ipp32f* ref_tmp = new Ipp32f[roi.width * roi.height];
-	Ipp32f* src_tmp = new Ipp32f[roi.width * roi.height];
+	int ipp32steps = roi.width * sizeof(Ipp32f)*2;
+	Ipp32f* ref_tmp = new Ipp32f[roi.width * roi.height * 4];
+	Ipp32f* src_tmp = new Ipp32f[roi.width * roi.height * 4];
 
 
 	clock_t t1, t2;
 	t1 = clock();
-	ippiConvert_8u32f_C1R(ref, roi.width * sizeof(Ipp8u), ref_tmp, roi.width * sizeof(Ipp32f), roi);
-	status = ippiFFTFwd_RToPack_32f_C1R(ref_tmp, roi.width * sizeof(Ipp32f), ref_tmp, roi.width * sizeof(Ipp32f), pFFTSpec, ipp8uBuffer);
 
-	ippiConvert_8u32f_C1R(src, roi.width * sizeof(Ipp8u), src_tmp, roi.width * sizeof(Ipp32f), roi);
-	status = ippiFFTFwd_RToPack_32f_C1R(src_tmp, roi.width * sizeof(Ipp32f), src_tmp, roi.width * sizeof(Ipp32f), pFFTSpec, ipp8uBuffer);
+	ippiSet_32f_C1R(0.0f, ref_tmp, ipp32steps, { roi.width*2, roi.height*2});
+	ippiConvert_8u32f_C1R(ref, roi.width * sizeof(Ipp8u), ref_tmp, ipp32steps, roi);
 
-	// Get Magnitude
-	//Ipp32f* ref_tmp_Mag = ippiMalloc_32f_C1(roi.width, roi.height, &ipp32steps);
-	//Ipp32f* src_tmp_Mag = ippiMalloc_32f_C1(roi.width, roi.height, &ipp32steps);
-	//
-	//int magSize;
-	//ippiMagnitudePackGetBufferSize_32f(1, roi, &magSize);
-	//Ipp8u* magBuffer = (Ipp8u*)ippMalloc(magSize);
-	//
-	//status = ippiMagnitudePack_32f_C1R(ref_tmp, ipp32steps, ref_tmp_Mag, ipp32steps, roi, magBuffer);
-	//status = ippiMagnitudePack_32f_C1R(src_tmp, ipp32steps, src_tmp_Mag, ipp32steps, roi, magBuffer);
-	//
-	//// Get Phase
-	//Ipp32f* ref_tmp_Pha = ippiMalloc_32f_C1(roi.width, roi.height, &ipp32steps);
-	//Ipp32f* src_tmp_Pha = ippiMalloc_32f_C1(roi.width, roi.height, &ipp32steps);
-	//
-	//int phaSize;
-	//ippiPhasePackGetBufferSize_32f(1, roi, &phaSize);
-	//Ipp8u* phaBuffer = (Ipp8u*)ippMalloc(phaSize);
-	//
-	//status = ippiPhasePack_32f_C1R(ref_tmp, ipp32steps, ref_tmp_Pha, ipp32steps, roi, phaBuffer);
-	//status = ippiPhasePack_32f_C1R(src_tmp, ipp32steps, src_tmp_Pha, ipp32steps, roi, phaBuffer);
+	status = ippiFFTFwd_RToPack_32f_C1R(ref_tmp, ipp32steps, ref_tmp, ipp32steps, pFFTSpec, ipp8uBuffer);
+
+	ippiSet_32f_C1R(0.0f, src_tmp, ipp32steps, { roi.width*2, roi.height*2});
+	ippiConvert_8u32f_C1R(src, roi.width * sizeof(Ipp8u), src_tmp, ipp32steps, roi);
+	status = ippiFFTFwd_RToPack_32f_C1R(src_tmp, ipp32steps, src_tmp, ipp32steps, pFFTSpec, ipp8uBuffer);
 
 	// Cross-Correlation
-	//ippiMulPackConj_32f_C1R(ref_tmp, ipp32steps, src_tmp, ipp32steps, src_tmp, ipp32steps, roi);
-	ippiMulPackConj_32f_C1IR(ref_tmp, ipp32steps, src_tmp, ipp32steps, roi);
+	ippiMulPackConj_32f_C1IR(ref_tmp, ipp32steps, src_tmp, ipp32steps, {roi.width*2, roi.height*2});
+
+	// rcpack2d to complex
+	Ipp32fc* tmp32fc = new Ipp32fc[roi.width*roi.height * 4];
+	ippiPackToCplxExtend_32f32fc_C1R(src_tmp, { roi.width * 2, roi.height * 2 }, ipp32steps, tmp32fc, roi.width * 2 * sizeof(Ipp32fc));
+
+	// magnitude
+	int sizeMag;
+	ippiMagnitudePackGetBufferSize_32f(1, { roi.width * 2, roi.height * 2 }, &sizeMag);
+	Ipp8u* magBuffer = (Ipp8u*)ippMalloc(sizeMag);
+
+	Ipp32f *magImg = new Ipp32f[roi.width * roi.height * 4];
+	ippiMagnitudePack_32f_C1R(src_tmp, ipp32steps, magImg, ipp32steps, { roi.width * 2, roi.height * 2 }, magBuffer);
+
+	// .....
+	Ipp32fc* pfcNumber(tmp32fc);
+	Ipp32f* pfNumber(magImg);
+	for (int i = 0; i < roi.height * roi.width * 4; i++)
+	{
+		const Ipp32f ctmp(*pfNumber);
+		if (0.f < ctmp)
+		{
+			pfcNumber->re /= ctmp;
+			pfcNumber->im /= ctmp;
+		}
+		++pfcNumber;
+		++pfNumber;
+	}
+
+	// complex to rcpack2d
+	ippiCplxExtendToPack_32fc32f_C1R(tmp32fc, roi.width * 2 * sizeof(Ipp32fc), { roi.width * 2, roi.height * 2 }, src_tmp, ipp32steps);
 
 	// IFFT
-	//ippiFFTInv_PackToR_32f_C1R(src_tmp, ipp32steps, src_tmp, ipp32steps, pFFTSpec, ipp8uBuffer);
 	ippiFFTInv_PackToR_32f_C1IR(src_tmp, ipp32steps, pFFTSpec, ipp8uBuffer);
-
+	
 	// Find Location
 	Ipp32f maxValue;
 	int Xindx, Yindx;
-	ippiMaxIndx_32f_C1R(src_tmp, ipp32steps, roi, &maxValue, &Xindx, &Yindx);
+	ippiMaxIndx_32f_C1R(src_tmp, ipp32steps, { roi.width*2, roi.height*2}, &maxValue, &Xindx, &Yindx);
+
+	Xindx = Xindx > (roi.width*2 / 2) ? (Xindx - roi.width*2) : Xindx;
+	Yindx = Yindx > (roi.height*2 / 2) ? (Yindx - roi.height*2) : Yindx;
 
 	LocationPair shift = { 0, 0 };
-	FindShift(src_tmp, shift, roi.width, roi.height, {(float)Xindx, (float)Yindx});
+	//FindShift(src_tmp, shift, roi.width, roi.height, {(float)Xindx, (float)Yindx});
 
 
 	t2 = clock();
@@ -80,6 +91,10 @@ void PhaseCorrelation(Ipp8u* ref, Ipp8u* src, IppiSize roi, int &wshift, int &hs
 
 	delete[] ref_tmp;
 	delete[] src_tmp;
+	delete[] magImg;
+	//delete[] imTEP;
+	delete[] tmp32fc;
+	//delete[] tmp2;
 	//ippiFree(ref_tmp);
 	//ippiFree(src_tmp);
 

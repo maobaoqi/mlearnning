@@ -21,10 +21,10 @@ int main()
 	Ipp8u* srcImg = new Ipp8u[w*h];
 
 	
-	ippiSet_8u_C1R(0, refImg, stepSize, roi);
-	refImg[18 + 4096 * 105] = 30;
-	refImg[19 + 4096 * 105] = 30;
-	refImg[20 + 4096 * 105] = 30;
+	ippiSet_8u_C1R(2, refImg, stepSize, roi);
+	refImg[3018 + 4096 * 105] = 50;
+	refImg[3019 + 4096 * 105] = 50;
+	refImg[3020 + 4096 * 105] = 50;
 	//refImg[1003 + 2048 * 105] = 10;
 	//refImg[1004 + 2048 * 105] = 10;
 	//refImg[1005 + 2048 * 105] = 10;
@@ -40,10 +40,10 @@ int main()
 
 
 	
-	ippiSet_8u_C1R(0, srcImg, stepSize, roi);
-	srcImg[15 + 4096 * 500] = 30;
-	srcImg[16 + 4096 * 500] = 30;
-	srcImg[17 + 4096 * 500] = 30;
+	ippiSet_8u_C1R(2, srcImg, stepSize, roi);
+	srcImg[18 + 4096 * 500] = 50;
+	srcImg[19 + 4096 * 500] = 50;
+	srcImg[20 + 4096 * 500] = 50;
 	
 	
 	int hshift = 0;
