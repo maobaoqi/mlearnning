@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<MyAPP>
+    <!--Settings for MyAPP-->
+    <Messages>
+        <Welcome>Welcome to MyAPP</Welcome>
+        <Farewell>Thank you for using MyAPP</Farewell>
+    </Messages>
+    <Windows>
+        <Window name="MainFrame" x="5" y="5" w="400" h="250" />
+    </Windows>
+    <Connections>
+        <Connection ip="192.168.0.1" timeout="123.456" />
+    </Connections>
+</MyAPP>
