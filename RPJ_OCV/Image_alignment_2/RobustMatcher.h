@@ -22,7 +22,7 @@ public:
 		confidence(0.98)
 	{
 		//detector = cv::ORB::create(200, 1.5, 4, 31, 0, 2, 0, 50, 31);
-		detector = cv::ORB::create();
+		detector = cv::ORB::create(1000);
 	}
 
 	

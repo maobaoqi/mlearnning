@@ -15,6 +15,7 @@ cv::Mat RobustMatcher::match(cv::Mat image1, cv::Mat image2,
 	std::vector<cv::DMatch> outputMatches;
 	matcher->match(descriptors1, descriptors2, outputMatches, cv::noArray());
 
+
 	cv::Mat fundamental = ransacTest(outputMatches, keypoints1, keypoints2, matches);
 
 	return fundamental;
@@ -29,12 +30,30 @@ cv::Mat RobustMatcher::ransacTest
 	std::vector<cv::DMatch> &outMatches
 )
 {
+	struct pointAndIndex
+	{
+		cv::Point2f point;
+		int index;
+	};
+
+	std::vector<pointAndIndex> pointsInfo1, pointsInfo2;
+	pointAndIndex pointInfo;
+
 	std::vector<cv::Point2f> points1, points2;
 	std::vector<cv::DMatch>::const_iterator it = matches.cbegin();
 	while (it != matches.cend())
 	{
 		points1.push_back(keypoints1[it->queryIdx].pt);
 		points2.push_back(keypoints2[it->trainIdx].pt);
+
+		pointInfo.point = keypoints1[it->queryIdx].pt;
+		pointInfo.index = it->queryIdx;
+		pointsInfo1.push_back(pointInfo);
+
+		pointInfo.point = keypoints2[it->trainIdx].pt;
+		pointInfo.index = it->trainIdx;
+		pointsInfo2.push_back(pointInfo);
+
 		it++;
 	}
 
@@ -73,71 +92,72 @@ cv::Mat RobustMatcher::ransacTest
 	cv::sortIdx(tab, index, cv::SORT_EVERY_COLUMN + cv::SORT_ASCENDING);
 
 	std::vector<cv::DMatch> goodMatches;
-	for (int i = 0; i < outMatches.size() / 4; i++)
+	for (int i = 0; i < outMatches.size() / 2; i++)
 	{
 		goodMatches.push_back(outMatches[index.at<int>(i, 0)]);
 	}
 
 	std::swap(goodMatches, outMatches);
 
+	
 	if (refineF)
 	{
-		points1.clear();
-		points2.clear();
+		pointsInfo1.clear();
+		pointsInfo2.clear();
 	
 		std::vector<cv::DMatch>::const_iterator it = outMatches.cbegin();
 		
-		//int i = 0;
 		while (it != outMatches.cend())
 		{
-			points1.push_back(keypoints1[it->queryIdx].pt);
-			points2.push_back(keypoints2[it->trainIdx].pt);
+			pointInfo.point = keypoints1[it->queryIdx].pt;
+			pointInfo.index = it->queryIdx;
+			pointsInfo1.push_back(pointInfo);
+
+			pointInfo.point = keypoints2[it->trainIdx].pt;
+			pointInfo.index = it->trainIdx;
+			pointsInfo2.push_back(pointInfo);
 	
 			it++;
-			//i++;
 		}
-
-		// Calcuate the move direction according the points.============
-		//std::vector<cv::Point2f> motionVectorInfo;
-		//cv::Point2f singleInfo;
 
 		struct MotionVector
 		{
 			float motionLength;
-			float motionAngle;
+			float motionDirect;
 			float xDifferValue;
 			float yDifferValue;
+
+			pointAndIndex points1;
+			pointAndIndex points2;
 		};
 
 		std::vector<MotionVector> motionVector;
 		MotionVector singleMotionVector;
 
-		for (int i = 0; i < points1.size(); i++)
+		for (int i = 0; i < pointsInfo1.size(); i++)
 		{
-			singleMotionVector.xDifferValue = points1[i].x - points2[i].x;
-			singleMotionVector.yDifferValue = points1[i].y - points2[i].y;
-		
-			singleMotionVector.motionLength = (singleMotionVector.xDifferValue)*(singleMotionVector.xDifferValue) +
-				(singleMotionVector.yDifferValue)*(singleMotionVector.yDifferValue);
-		
-			float angle;
-			if (singleMotionVector.xDifferValue < 1e-2)
+			singleMotionVector.xDifferValue = pointsInfo1[i].point.x - pointsInfo2[i].point.x;
+			singleMotionVector.yDifferValue = pointsInfo1[i].point.y - pointsInfo2[i].point.y;
+
+			if (singleMotionVector.xDifferValue < 1e-3 && singleMotionVector.yDifferValue < 1e-3)
 			{
-				singleMotionVector.motionAngle = 3.14 / 2;
+				singleMotionVector.motionDirect = 0;
 			}
 			else
 			{
-				singleMotionVector.motionAngle = singleMotionVector.yDifferValue / singleMotionVector.xDifferValue;
+				singleMotionVector.motionDirect = std::atanf(singleMotionVector.yDifferValue / singleMotionVector.xDifferValue);
 			}
-		
-			if (singleMotionVector.motionLength > 1.0f)
-			{
-				motionVector.push_back(singleMotionVector);
-			}
+			singleMotionVector.motionLength = singleMotionVector.xDifferValue*singleMotionVector.xDifferValue 
+				+ singleMotionVector.yDifferValue * singleMotionVector.yDifferValue;
+
+			singleMotionVector.points1 = pointsInfo1[i];
+			singleMotionVector.points2 = pointsInfo2[i];
+			
+			motionVector.push_back(singleMotionVector);
 		}
 		
-		// Statistics
-		float step = 0.5f;
+		// Statistics===================================================//
+		float step = -1.6f;// -pi/2
 		std::vector<std::vector<MotionVector>> motionVectorHistogram;
 		std::vector<MotionVector> motionVectorSet;
 		
@@ -145,9 +165,9 @@ cv::Mat RobustMatcher::ransacTest
 		{
 			motionVectorSet.clear();
 		
-			for (auto iter = motionVector.cbegin(); iter != motionVector.cend();)
+			for (auto iter = motionVector.begin(); iter != motionVector.end();)
 			{
-				if (iter->motionLength < step)
+				if (iter->motionDirect < step)
 				{
 					motionVectorSet.push_back(*iter);
 					iter = motionVector.erase(iter);
@@ -159,7 +179,7 @@ cv::Mat RobustMatcher::ransacTest
 			}
 		
 			motionVectorHistogram.push_back(motionVectorSet);
-			step += 5.0f;
+			step += 0.982f;// pi/16
 		}
 		
 		int maxCountIndex = 0;
@@ -173,18 +193,70 @@ cv::Mat RobustMatcher::ransacTest
 			}
 		}
 		
-		// average
 		motionVectorSet = motionVectorHistogram[maxCountIndex];
+		
+		
+
+		//
+		step = 0.0f;
+		motionVectorHistogram.clear();
+		while (motionVectorSet.size() > 0)
+		{
+			motionVector.clear();
+
+			for (auto iter = motionVectorSet.begin(); iter != motionVectorSet.end();)
+			{
+				if (iter->motionLength < (step + 1e-1))
+				{
+					motionVector.push_back(*iter);
+					iter = motionVectorSet.erase(iter);
+				}
+				else
+				{
+					iter++;
+				}
+			}
+
+			motionVectorHistogram.push_back(motionVector);
+			step += 3.0f;
+		}
+
+		maxCountIndex = 0;
+		maxSize = 0;
+		for (int i = 0; i < motionVectorHistogram.size(); i++)
+		{
+			if (maxSize < motionVectorHistogram[i].size())
+			{
+				maxCountIndex = i;
+				maxSize = motionVectorHistogram[i].size();
+			}
+		}
+
+		motionVectorSet.clear();
+		motionVectorSet = motionVectorHistogram[maxCountIndex];
+
+		// Update mathces by rotate angle to find the max
+		goodMatches.clear();
+		for (int i = 0; i < motionVectorSet.size(); i++)
+		{
+			for (int j = 0; j < outMatches.size(); j++)
+			{
+				if (outMatches[j].queryIdx == motionVectorSet[i].points1.index)
+				{
+					goodMatches.push_back(outMatches[j]);
+				}
+			}
+		}
+		std::swap(goodMatches, outMatches);
+
+
+
 		float avgLength = 0.0f, avgAngle = 0.0, avgDiffX = 0.0, avgDiffY = 0.0;
 		for (int i = 0; i < motionVectorSet.size(); i++)
 		{
-			avgLength += motionVectorSet[i].motionLength;
-			avgAngle += motionVectorSet[i].motionAngle;
 			avgDiffX += motionVectorSet[i].xDifferValue;
 			avgDiffY += motionVectorSet[i].yDifferValue;
 		}
-		avgLength /= motionVectorSet.size();
-		avgAngle /= motionVectorSet.size();
 		avgDiffX /= motionVectorSet.size();
 		avgDiffY /= motionVectorSet.size();
 		
@@ -192,33 +264,43 @@ cv::Mat RobustMatcher::ransacTest
 		float delta_y = avgDiffY;
 		float delta_x = avgDiffX;
 	
+		points1.clear();
+		points2.clear();
+		for (int i = 0; i < motionVectorSet.size(); i++)
+		{
+			points1.push_back(motionVectorSet[i].points1.point);
+			points2.push_back(motionVectorSet[i].points2.point);
+		}
 	    //cv::Mat R = cv::getAffineTransform(points1, points2);
-		cv::Mat R = cv::estimateRigidTransform(points1, points2, false);
+		//cv::Mat R = cv::estimateRigidTransform(points1, points2, false);
 		//fundamental = cv::findHomography(points1, points2);
 		//cv::Mat R = cv::estimateAffine2D(points1, points2, cv::noArray());
-
-		//cv::Mat rotateM = cv::get
-
 
 		// extend rigid transformation to use perspectiveTransform:
 		cv::Mat H = cv::Mat(2, 3, CV_64F);
 		H.at<double>(0, 0) = 1.0f;
-		H.at<double>(0, 1) = R.at<double>(0, 1);
-		H.at<double>(0, 2) = -delta_x * 10;
-
-		H.at<double>(1, 0) = R.at<double>(1, 0);
+		//H.at<double>(0, 0) = R.at<double>(0, 0);
+		//H.at<double>(0, 1) = R.at<double>(0, 1);
+		H.at<double>(0, 1) = 0.0f;
+		H.at<double>(0, 2) = -delta_x*10;
+		H.at<double>(0, 2) = 8;
+		//H.at<double>(0, 2) = R.at<double>(0, 2);
+		
+		//H.at<double>(1, 0) = R.at<double>(1, 0);
+		H.at<double>(1, 0) = 0.0f;
 		H.at<double>(1, 1) = 1.0f;
-		H.at<double>(1, 2) = -delta_y * 10;
+		//H.at<double>(1, 1) = R.at<double>(1, 1);
+		H.at<double>(1, 2) = -delta_y*10;
+		H.at<double>(1, 2) = -1;
+		//H.at<double>(1, 2) = R.at<double>(1, 2);
 
-		//H.at<double>(2, 0) = 0.0f;
-		//H.at<double>(2, 1) = 0.0f;
-		//H.at<double>(2, 2) = 1.0f;
+		//m_singleMotion.x = (-delta_x * 10);
+		//m_singleMotion.y = (-delta_y * 10);
 
-		std::cout << "Delta X: " << delta_x*10 << "  " << "Delta Y:" << delta_y*10 << std::endl;
+		std::cout << "Delta X: " << delta_x*5 << "  " << "Delta Y:" << delta_y*5 << std::endl;
 
-		fundamental = H;
+		fundamental = H;;
 	}
-
 
 
 	return fundamental;

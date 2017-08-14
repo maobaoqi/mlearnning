@@ -17,21 +17,21 @@ void help(char** argv)
 
 int main(int argc, char** argv)
 {
-	if (argc != 3)
-	{
-		help(argv);
-		exit(-1);
-	}
+	//if (argc != 3)
+	//{
+	//	help(argv);
+	//	exit(-1);
+	//}
 
 	// Initialize, load two images from the file system, and
 	// allocate the images and other structure we will need for
 	// results.
 	//
-	cv::Mat img1 = cv::imread(argv[1], cv::IMREAD_GRAYSCALE);
-	cv::Mat img2 = cv::imread(argv[2], cv::IMREAD_GRAYSCALE);
+	cv::Mat img1 = cv::imread("D:\\Test Images\\Camera2\\test (1).tif", cv::IMREAD_GRAYSCALE);
+	cv::Mat img2 = cv::imread("D:\\Test Images\\Camera2\\test (2).tif", cv::IMREAD_GRAYSCALE);
 
-	cv::Mat imgA = img1(cv::Rect(70, 70, img1.size().width - 70, img1.size().height - 70));
-	cv::Mat imgB = img2(cv::Rect(70, 70, img2.size().width - 70, img2.size().height - 70));
+	cv::Mat imgA = img1(cv::Rect(0, 0, img1.size().width, img1.size().height));
+	cv::Mat imgB = img2(cv::Rect(0, 0, img2.size().width, img2.size().height));
 
 	cv::Size img_sz = imgA.size();
 	int win_size = 10;
@@ -184,13 +184,15 @@ int main(int argc, char** argv)
 	std::cout << "Delta X:" << delta_x << std::endl;
 	std::cout << "Delta Y:" << delta_y << std::endl;
 
+
+
 	// transfrom
 	cv::Mat transformImg(img1.size(), CV_16U, cv::Scalar(0));
 
 
 
 	cv::Mat dst;
-	cv::resize(imgC, dst, cv::Size(), 0.25, 0.25);
+	cv::resize(imgC, dst, cv::Size(), 0.8, 0.8);
 
 	//cv::imshow("Image A", imgA);
 	//cv::imshow("Image B", imgB);
