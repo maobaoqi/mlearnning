@@ -6,6 +6,7 @@ class RobustMatcher
 {
 private:
 	cv::Ptr<cv::Feature2D> detector;
+	cv::Ptr<cv::Feature2D> computor;
 
 	int normType;
 	float ratio;
@@ -21,8 +22,8 @@ public:
 		distance(3.0),
 		confidence(0.98)
 	{
-		//detector = cv::ORB::create(200, 1.5, 4, 31, 0, 2, 0, 50, 31);
-		detector = cv::ORB::create(1000);
+		detector = cv::ORB::create();
+		computor = cv::BRISK::create();
 	}
 
 	

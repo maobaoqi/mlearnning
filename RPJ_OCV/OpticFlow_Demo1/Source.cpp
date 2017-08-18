@@ -1,34 +1,17 @@
 #include <opencv2\opencv.hpp>
 #include <opencv2\imgproc.hpp>
 #include <iostream>
-
+#include <ctime>
 
 #define PI 3.1415926
 
 using namespace std;
 
-static const int MAX_CORNERS = 1000;
-
-void help(char** argv)
-{
-	cout << "Call: " << argv[0] << " [image1] [image2]" << endl;
-	cout << "Demonstrates Pyramid Lucas-Kanade optical flow." << endl;
-}
-
 int main(int argc, char** argv)
 {
-	//if (argc != 3)
-	//{
-	//	help(argv);
-	//	exit(-1);
-	//}
-
-	// Initialize, load two images from the file system, and
-	// allocate the images and other structure we will need for
-	// results.
-	//
-	cv::Mat img1 = cv::imread("D:\\Test Images\\Camera2\\test (1).tif", cv::IMREAD_GRAYSCALE);
-	cv::Mat img2 = cv::imread("D:\\Test Images\\Camera2\\test (2).tif", cv::IMREAD_GRAYSCALE);
+	
+	cv::Mat img1 = cv::imread("D:\\Test Images\\Camera2\\test (15).tif", cv::IMREAD_GRAYSCALE);
+	cv::Mat img2 = cv::imread("D:\\Test Images\\Camera2\\test (17).tif", cv::IMREAD_GRAYSCALE);
 
 	cv::Mat imgA = img1(cv::Rect(0, 0, img1.size().width, img1.size().height));
 	cv::Mat imgB = img2(cv::Rect(0, 0, img2.size().width, img2.size().height));
@@ -37,9 +20,7 @@ int main(int argc, char** argv)
 	int win_size = 10;
 	cv::Mat imgC = imgB;
 
-	// The first thing we need to do is get the features
-	// we want to track.
-	//
+	
 	vector<cv::Point2f> cornersA, cornersB;
 	const int MAX_CORNERS = 500;
 	cv::goodFeaturesToTrack(
@@ -66,6 +47,8 @@ int main(int argc, char** argv)
 	//	)
 	//);
 
+	clock_t t1, t2;
+	t1 = clock();
 	// Call the Lucas Kanade algorithm
 	vector<uchar> features_found;
 	cv::calcOpticalFlowPyrLK(
@@ -83,12 +66,10 @@ int main(int argc, char** argv)
 			0.3
 		)
 	);
+	t2 = clock();
+	std::cout << "Time : " << (double)(t2 - t1) / CLOCKS_PER_SEC << std::endl;
 
-	// Now make some image of what we are looking at:
-	// Note that if you want to track cornerB further, i.e.
-	// pass them as input to the next calcOpticalFlowPyrLK,
-	// you would need to "compress" the vector, i.e. exclude points for
-	// which features_found[i] == false.
+	
 	vector<cv::Point2f> tmpA, tmpB;
 	for (int i = 0; i < (int)cornersA.size(); i++)
 	{
@@ -96,7 +77,7 @@ int main(int argc, char** argv)
 		{
 			continue;
 		}
-		cv::line(imgC, cornersA[i], cornersB[i], cv::Scalar(0), 2, cv::LINE_AA);
+		//cv::line(imgC, cornersA[i], cornersB[i], cv::Scalar::all(-1), 2, cv::LINE_AA);
 		
 		tmpA.push_back(cornersA[i]);
 		tmpB.push_back(cornersB[i]);
@@ -187,16 +168,25 @@ int main(int argc, char** argv)
 
 
 	// transfrom
-	cv::Mat transformImg(img1.size(), CV_16U, cv::Scalar(0));
-
-
+	cv::Mat transformMatrix(2, 3, CV_32F);
+	transformMatrix.at<float>(0, 0) = 1.0f;
+	transformMatrix.at<float>(0, 1) = 0.0f;
+	transformMatrix.at<float>(0, 2) = delta_x;
+	
+	transformMatrix.at<float>(1, 0) = 0.0f;
+	transformMatrix.at<float>(1, 1) = 1.0f;
+	transformMatrix.at<float>(1, 2) = delta_y;
 
 	cv::Mat dst;
-	cv::resize(imgC, dst, cv::Size(), 0.8, 0.8);
+	cv::warpAffine(imgB, dst, transformMatrix, cv::Size());
+	cv::imwrite("D:\\Test Images\\Camera2\\testResult.tif", dst);
+
+	cv::Mat result;
+	cv::resize(imgC, result, cv::Size(), 0.8, 0.8);
 
 	//cv::imshow("Image A", imgA);
 	//cv::imshow("Image B", imgB);
-	cv::imshow("LK Optical Flow Example", dst);
+	cv::imshow("LK Optical Flow Example", result);
 	cv::waitKey(0);
 
 	return 0;

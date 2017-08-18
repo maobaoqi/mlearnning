@@ -19,13 +19,15 @@ int main(int argc, char** argv)
 
 	int offset = 0;
 
-	cv::Mat imgRef = cv::imread("D:\\Test Images\\Camera2\\test (1).tif", IMREAD_UNCHANGED);
+	cv::Mat imgRef = cv::imread("D:\\Test Images\\Camera2\\test (15).tif", IMREAD_UNCHANGED);
 	
 	cv::Mat srcRef = imgRef(cv::Rect(offset, offset, imgRef.cols - offset, imgRef.rows - offset));
-	cv::resize(srcRef, srcRef, cv::Size(), 0.1, 0.1);
+	cv::resize(srcRef, srcRef, cv::Size(), 0.5, 0.5);
+	
+	cv::GaussianBlur(srcRef, srcRef, cv::Size(3, 3), 1.5, 1.5);
 
-	int i = 2;
-	while (i < 3)
+	int i = 15;
+	while (i < 18)
 	{
 		char name[50];
 		sprintf(name, "D:\\Test Images\\Camera2\\test (%d).tif", i);
@@ -34,7 +36,8 @@ int main(int argc, char** argv)
 		cv::Mat img = cv::imread(filename, IMREAD_UNCHANGED);
 		cv::Mat src = img(cv::Rect(offset, offset, img.cols - offset, img.rows - offset));
 
-		cv::resize(src, src, cv::Size(), 0.1, 0.1);
+		cv::resize(src, src, cv::Size(), 0.5, 0.5);
+		cv::GaussianBlur(src, src, cv::Size(3, 3), 1.5, 1.5);
 
 		std::vector<cv::DMatch> matches;
 		std::vector<cv::KeyPoint> keypoints1, keypoints2;
@@ -42,7 +45,7 @@ int main(int argc, char** argv)
 		cv::Mat fundamentl = rbMatcher.match(src, srcRef, matches, keypoints1, keypoints2);
 
 		cv::Mat result, showImage;
-		cv::drawMatches(src, keypoints1, srcRef, keypoints2, matches, result);
+		cv::drawMatches(src, keypoints1, srcRef, keypoints2, matches, result, cv::DrawMatchesFlags::DRAW_OVER_OUTIMG);
 
 		cv::Mat dst;
 		cv::warpAffine(img, dst, fundamentl, cv::Size());
@@ -54,13 +57,13 @@ int main(int argc, char** argv)
 		std::cout << "Done " << i << std::endl;
 
 		i++;
-
-		cv::imshow(name, result);
+		cv::resize(result, result, cv::Size(), 0.2, 0.2);
+		//cv::imshow(name, result);
 	}
 	
 	t2 = clock();
 
-	std::cout << double(t2 - t1) / CLOCKS_PER_SEC * 1000 / (i - 1) << std::endl;
+	std::cout << double(t2 - t1) / CLOCKS_PER_SEC * 1000 << std::endl;
 	waitKey(0);
 
 	return 0;
