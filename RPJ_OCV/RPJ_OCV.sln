@@ -51,6 +51,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2_Threshold_Segement", "2_T
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3_OpticFlow_IPP", "3_OpticFlow_IPP\3_OpticFlow_IPP.vcxproj", "{D9FEB0B5-05D4-452D-8EB6-62260A653F42}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "4_ReadAviFile", "4_ReadAviFile\4_ReadAviFile.vcxproj", "{3AF7FC54-422D-48D4-AF23-6B76AE5FA0BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -251,6 +253,14 @@ Global
 		{D9FEB0B5-05D4-452D-8EB6-62260A653F42}.Release|x64.Build.0 = Release|x64
 		{D9FEB0B5-05D4-452D-8EB6-62260A653F42}.Release|x86.ActiveCfg = Release|Win32
 		{D9FEB0B5-05D4-452D-8EB6-62260A653F42}.Release|x86.Build.0 = Release|Win32
+		{3AF7FC54-422D-48D4-AF23-6B76AE5FA0BE}.Debug|x64.ActiveCfg = Debug|x64
+		{3AF7FC54-422D-48D4-AF23-6B76AE5FA0BE}.Debug|x64.Build.0 = Debug|x64
+		{3AF7FC54-422D-48D4-AF23-6B76AE5FA0BE}.Debug|x86.ActiveCfg = Debug|Win32
+		{3AF7FC54-422D-48D4-AF23-6B76AE5FA0BE}.Debug|x86.Build.0 = Debug|Win32
+		{3AF7FC54-422D-48D4-AF23-6B76AE5FA0BE}.Release|x64.ActiveCfg = Release|x64
+		{3AF7FC54-422D-48D4-AF23-6B76AE5FA0BE}.Release|x64.Build.0 = Release|x64
+		{3AF7FC54-422D-48D4-AF23-6B76AE5FA0BE}.Release|x86.ActiveCfg = Release|Win32
+		{3AF7FC54-422D-48D4-AF23-6B76AE5FA0BE}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
