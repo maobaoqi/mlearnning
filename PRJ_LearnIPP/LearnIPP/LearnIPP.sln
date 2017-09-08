@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LearnIPP_FFT", "LearnIPP_FF
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LearnIPP_regExp", "LearnIPP_regExp\LearnIPP_regExp.vcxproj", "{34B410AA-9270-455C-90EF-50BD48CE314A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestIPP_OpticalFlow", "TestIPP_OpticalFlow\TestIPP_OpticalFlow.vcxproj", "{B1C60DBD-D3E4-45EE-8C7E-4D8D423C7A33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -61,6 +63,14 @@ Global
 		{34B410AA-9270-455C-90EF-50BD48CE314A}.Release|x64.Build.0 = Release|x64
 		{34B410AA-9270-455C-90EF-50BD48CE314A}.Release|x86.ActiveCfg = Release|Win32
 		{34B410AA-9270-455C-90EF-50BD48CE314A}.Release|x86.Build.0 = Release|Win32
+		{B1C60DBD-D3E4-45EE-8C7E-4D8D423C7A33}.Debug|x64.ActiveCfg = Debug|x64
+		{B1C60DBD-D3E4-45EE-8C7E-4D8D423C7A33}.Debug|x64.Build.0 = Debug|x64
+		{B1C60DBD-D3E4-45EE-8C7E-4D8D423C7A33}.Debug|x86.ActiveCfg = Debug|Win32
+		{B1C60DBD-D3E4-45EE-8C7E-4D8D423C7A33}.Debug|x86.Build.0 = Debug|Win32
+		{B1C60DBD-D3E4-45EE-8C7E-4D8D423C7A33}.Release|x64.ActiveCfg = Release|x64
+		{B1C60DBD-D3E4-45EE-8C7E-4D8D423C7A33}.Release|x64.Build.0 = Release|x64
+		{B1C60DBD-D3E4-45EE-8C7E-4D8D423C7A33}.Release|x86.ActiveCfg = Release|Win32
+		{B1C60DBD-D3E4-45EE-8C7E-4D8D423C7A33}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
